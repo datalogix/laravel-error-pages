@@ -3,7 +3,6 @@
 [![Latest Stable Version](https://poser.pugx.org/datalogix/laravel-error-pages/version)](https://packagist.org/packages/datalogix/laravel-error-pages)
 [![Total Downloads](https://poser.pugx.org/datalogix/laravel-error-pages/downloads)](https://packagist.org/packages/datalogix/laravel-error-pages)
 [![tests](https://github.com/datalogix/laravel-error-pages/workflows/tests/badge.svg)](https://github.com/datalogix/laravel-error-pages/actions)
-[![StyleCI](https://github.styleci.io/repos/432432432/shield?style=flat)](https://github.styleci.io/repos/432432432)
 [![codecov](https://codecov.io/gh/datalogix/laravel-error-pages/branch/main/graph/badge.svg)](https://codecov.io/gh/datalogix/laravel-error-pages)
 [![License](https://poser.pugx.org/datalogix/laravel-error-pages/license)](https://packagist.org/packages/datalogix/laravel-error-pages)
 
