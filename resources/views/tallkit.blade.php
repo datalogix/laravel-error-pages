@@ -1,0 +1,9 @@
+<tk:html>
+    <tk:layout.error>
+        <tk:page.error
+            :$code
+            :$title
+            :$description
+        />
+    </tk:layout.error>
+</tk:html>

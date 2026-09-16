@@ -1,0 +1,53 @@
+{
+    "name": "datalogix/laravel-error-pages",
+    "description": "Renders custom HTTP error pages (404, 403, 500, ...) with translated copy, using TALLKit components when available.",
+    "keywords": ["laravel", "error-pages", "exceptions"],
+    "homepage": "https://github.com/datalogix/laravel-error-pages",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Ricardo Gobbo de Souza",
+            "email": "ricardogobbosouza@yahoo.com.br"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/contracts": "^11.0|^12.0|^13.0",
+        "illuminate/support": "^11.0|^12.0|^13.0"
+    },
+    "require-dev": {
+        "graham-campbell/testbench": "^6.3",
+        "laravel/pint": "^1.30",
+        "phpunit/phpunit": "^11.5"
+    },
+    "suggest": {
+        "datalogix/tallkit": "Renders prettier error pages using the TALLKit UI components"
+    },
+    "autoload": {
+        "psr-4": {
+            "Datalogix\\ErrorPages\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Datalogix\\ErrorPages\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "lint": "vendor/bin/pint",
+        "test": "vendor/bin/phpunit"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Datalogix\\ErrorPages\\ErrorPagesServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
