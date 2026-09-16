@@ -8,13 +8,6 @@ use RuntimeException;
 
 abstract class TestCase extends AbstractPackageTestCase
 {
-    /**
-     * Config values merged into the app before the providers boot. Needs a
-     * refreshApplication() call after setting this, since bootRenderable()
-     * reads error-pages.enabled/codes once, at boot time.
-     *
-     * @var array<string, mixed>
-     */
     protected array $errorPagesConfig = [];
 
     protected static function getServiceProviderClass(): string
