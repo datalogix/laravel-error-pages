@@ -3,12 +3,10 @@
 namespace Datalogix\ErrorPages\Tests\Feature;
 
 use Datalogix\ErrorPages\Tests\TestCase;
-use PHPUnit\Framework\Attributes\Test;
 
 class ConfigGatingTest extends TestCase
 {
-    #[Test]
-    public function disabled_config_lets_exception_pass_through(): void
+    public function test_disabled_config_lets_exception_pass_through(): void
     {
         $this->errorPagesConfig = ['error-pages.enabled' => false];
         $this->refreshApplication();
@@ -19,8 +17,7 @@ class ConfigGatingTest extends TestCase
         $response->assertDontSee('class="badge"', false);
     }
 
-    #[Test]
-    public function codes_restriction_only_intercepts_listed_codes(): void
+    public function test_codes_restriction_only_intercepts_listed_codes(): void
     {
         $this->errorPagesConfig = ['error-pages.codes' => [403]];
         $this->refreshApplication();
@@ -29,8 +26,7 @@ class ConfigGatingTest extends TestCase
         $this->get('/boom/404')->assertStatus(404)->assertDontSee('class="badge"', false);
     }
 
-    #[Test]
-    public function json_requests_bypass_the_package(): void
+    public function test_json_requests_bypass_the_package(): void
     {
         $response = $this->getJson('/boom/404');
 
@@ -39,8 +35,7 @@ class ConfigGatingTest extends TestCase
         $response->assertJsonStructure(['message']);
     }
 
-    #[Test]
-    public function non_http_exceptions_are_not_touched(): void
+    public function test_non_http_exceptions_are_not_touched(): void
     {
         $response = $this->get('/boom-runtime');
 

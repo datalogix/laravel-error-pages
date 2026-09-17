@@ -4,7 +4,6 @@ namespace Datalogix\ErrorPages\Tests\Feature;
 
 use Datalogix\ErrorPages\Tests\TestCase;
 use Illuminate\Support\Facades\File;
-use PHPUnit\Framework\Attributes\Test;
 
 class PublishingTest extends TestCase
 {
@@ -16,16 +15,14 @@ class PublishingTest extends TestCase
         parent::tearDown();
     }
 
-    #[Test]
-    public function config_can_be_published(): void
+    public function test_config_can_be_published(): void
     {
         $this->artisan('vendor:publish', ['--tag' => 'error-pages-config', '--force' => true]);
 
         $this->assertFileExists(config_path('error-pages.php'));
     }
 
-    #[Test]
-    public function lang_files_can_be_published(): void
+    public function test_lang_files_can_be_published(): void
     {
         $this->artisan('vendor:publish', ['--tag' => 'error-pages-lang', '--force' => true]);
 
