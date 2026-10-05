@@ -4,4 +4,7 @@ namespace TALLKit;
 
 use Illuminate\Support\ServiceProvider;
 
-class TALLKitServiceProvider extends ServiceProvider {}
+class TALLKitServiceProvider extends ServiceProvider
+{
+    //
+}
