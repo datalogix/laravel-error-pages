@@ -2,6 +2,8 @@
 
 return [
     'back_home' => 'Back to home',
+    'go_back' => 'Go back and try again',
+    'sign_in' => 'Sign in',
 
     400 => [
         'title' => "That request didn't quite work",
@@ -18,9 +20,14 @@ return [
         'description' => "You don't have permission to view this. If that doesn't sound right, let us know.",
     ],
 
+    404 => [
+        'title' => "We couldn't find that page",
+        'description' => 'It may have been moved, renamed, or the link might be outdated.',
+    ],
+
     419 => [
         'title' => 'Your session has expired',
-        'description' => 'For your security we signed you out after a while. Please refresh the page and try again?',
+        'description' => 'For your security we signed you out after a while. Please refresh the page and try again.',
     ],
 
     429 => [
@@ -30,7 +37,7 @@ return [
 
     500 => [
         'title' => 'Something went wrong on our end',
-        'description' => "We've already been notified and we're looking into it. Please try again in a bit.",
+        'description' => 'Something unexpected happened on our side. Please try again in a bit.',
     ],
 
     502 => [
@@ -49,7 +56,7 @@ return [
     ],
 
     'default' => [
-        'title' => "We couldn't find that page",
-        'description' => 'It may have been moved, renamed, or the link might be outdated.',
+        'title' => "Something didn't go as expected",
+        'description' => "We couldn't complete your request. Please go back and try again.",
     ],
 ];

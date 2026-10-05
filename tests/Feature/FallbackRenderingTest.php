@@ -35,6 +35,21 @@ class FallbackRenderingTest extends TestCase
         $response->assertDontSee($en[403]['title']);
     }
 
+    public function test_untranslated_locale_falls_back_to_english_copy(): void
+    {
+        $en = require dirname(__DIR__, 2).'/lang/en/messages.php';
+
+        App::setLocale('es');
+        app('translator')->setFallback('es');
+
+        $response = $this->get('/boom/404');
+
+        $response->assertStatus(404);
+        $response->assertSee('<html lang="en">', false);
+        $response->assertSee($en[404]['title']);
+        $response->assertSee($en['back_home']);
+    }
+
     public function test_original_exception_headers_are_preserved(): void
     {
         $response = $this->get('/boom-headers');
