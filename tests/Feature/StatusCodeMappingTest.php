@@ -21,7 +21,7 @@ class StatusCodeMappingTest extends TestCase
 
     public static function mappedStatusCodes(): array
     {
-        return [[400], [401], [403], [419], [429], [500], [502], [503], [504]];
+        return [[400], [401], [403], [404], [419], [429], [500], [502], [503], [504]];
     }
 
     public function test_unmapped_status_code_falls_back_to_default_copy(): void

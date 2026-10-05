@@ -2,6 +2,8 @@
 
 return [
     'back_home' => 'Voltar ao início',
+    'go_back' => 'Voltar e tentar novamente',
+    'sign_in' => 'Entrar',
 
     400 => [
         'title' => 'Essa solicitação não funcionou muito bem',
@@ -18,6 +20,11 @@ return [
         'description' => 'Você não tem permissão para visualizar isso. Se achar que isso está errado, nos avise.',
     ],
 
+    404 => [
+        'title' => 'Não encontramos essa página',
+        'description' => 'Ela pode ter sido movida, renomeada ou o link pode estar desatualizado.',
+    ],
+
     419 => [
         'title' => 'Sua sessão expirou',
         'description' => 'Por segurança, desconectamos você após um tempo. Atualize a página e tente novamente.',
@@ -30,7 +37,7 @@ return [
 
     500 => [
         'title' => 'Algo deu errado do nosso lado',
-        'description' => 'Já fomos notificados e estamos verificando. Tente novamente em instantes.',
+        'description' => 'Aconteceu algo inesperado do nosso lado. Tente novamente em instantes.',
     ],
 
     502 => [
@@ -49,7 +56,7 @@ return [
     ],
 
     'default' => [
-        'title' => 'Não encontramos essa página',
-        'description' => 'Ela pode ter sido movida, renomeada ou o link pode estar desatualizado.',
+        'title' => 'Algo não saiu como esperado',
+        'description' => 'Não conseguimos concluir sua solicitação. Volte e tente novamente.',
     ],
 ];

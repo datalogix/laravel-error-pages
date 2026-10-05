@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', $locale) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -62,7 +62,7 @@
         }
 
         p.description {
-            margin: 0 0 1.75rem;
+            margin: 0;
             font-size: 0.9375rem;
             line-height: 1.6;
             color: #64748b;
@@ -70,6 +70,7 @@
 
         .button {
             display: inline-flex;
+            margin-top: 1.75rem;
             align-items: center;
             gap: 0.375rem;
             padding: 0.625rem 1.25rem;
@@ -108,9 +109,11 @@
         <span class="badge">{{ $code }}</span>
         <h1>{{ $title }}</h1>
         <p class="description">{{ $description }}</p>
-        <a class="button" href="{{ url('/') }}">
-            {{ __('error-pages::messages.back_home') }}
-        </a>
+        @if ($action)
+            <a class="button" href="{{ $action['url'] }}">
+                {{ $action['label'] }}
+            </a>
+        @endif
     </div>
 </body>
 </html>

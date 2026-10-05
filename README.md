@@ -27,7 +27,10 @@ These features work out of the box—no additional configuration required:
   Replaces Laravel's default error pages for any HTTP exception (404, 403, 500, and more) with a clean, translated page — including automatic dark mode support.
 
 - 🌍 **Multi-language Support**
-  Includes built-in translations for English (`en`) and Brazilian Portuguese (`pt_BR`). Files are auto-loaded and can be published for customization.
+  Includes built-in translations for English (`en`) and Brazilian Portuguese (`pt_BR`). Files are auto-loaded and can be published for customization. When neither the current nor the fallback locale is translated, the English copy is used.
+
+- 🧭 **Context-aware Action Button**
+  The button adapts to the error: `401` links to your `login` route (when defined), `419` sends the user back to the previous page, `503` (maintenance) shows no button, and everything else links to the home page.
 
 - 🧩 **TALLKit Integration**
   Automatically renders richer error pages using [TALLKit](https://github.com/datalogix/tallkit)'s `<tk:layout.error>` and `<tk:page.error>` components when `datalogix/tallkit` is installed — no configuration required.
@@ -35,8 +38,8 @@ These features work out of the box—no additional configuration required:
 - 🔌 **JSON-aware**
   Requests that expect JSON are left untouched, so your API responses are never affected.
 
-- 🛠️ **Console Support**
-  Config and translation files can be published using Artisan when running in the console environment.
+- 🧱 **Respects Your Own Views**
+  If your application defines `resources/views/errors/{code}.blade.php`, that view is used instead of the package's page for that status code.
 
 ## Configuration
 
@@ -56,8 +59,14 @@ return [
     // Restrict rendering to specific status codes, e.g. [403, 404, 500].
     // Leave as `null` to handle every HTTP exception.
     'codes' => null,
+
+    // Show the exception message (e.g. abort(403, 'Upgrade your plan'))
+    // instead of the translated description when it isn't empty.
+    'show_exception_message' => false,
 ];
 ```
+
+> ⚠️ When `show_exception_message` is enabled, framework-generated messages are shown too — e.g. `The route foo could not be found.` or `No query results for model [App\Models\User].` Only enable it if your HTTP exception messages are meant for end users.
 
 ## Translations
 
@@ -71,4 +80,6 @@ This will copy the `en` and `pt_BR` translation files to `lang/vendor/error-page
 
 ## TALLKit Integration
 
-If [`datalogix/tallkit`](https://github.com/datalogix/tallkit) is installed in your application, error pages are automatically rendered using its `<tk:layout.error>` and `<tk:page.error>` components for a richer, design-system-consistent look. No extra configuration is needed — the package detects TALLKit's presence and switches views automatically.
+If [`datalogix/tallkit`](https://github.com/datalogix/tallkit) is installed and its service provider is loaded, error pages are automatically rendered using its `<tk:layout.error>` and `<tk:page.error>` components for a richer, design-system-consistent look. No extra configuration is needed — the package detects TALLKit's presence and switches views automatically.
+
+If the TALLKit page itself fails to render (e.g. a missing Vite manifest or an unavailable database while handling a `500`), the failure is reported and the dependency-free fallback page is shown instead.
