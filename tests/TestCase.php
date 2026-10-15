@@ -3,18 +3,19 @@
 namespace Datalogix\ErrorPages\Tests;
 
 use Datalogix\ErrorPages\ErrorPagesServiceProvider;
-use GrahamCampbell\TestBench\AbstractPackageTestCase;
+use Orchestra\Testbench\TestCase as BaseTestCase;
 use RuntimeException;
 
-abstract class TestCase extends AbstractPackageTestCase
+abstract class TestCase extends BaseTestCase
 {
-    protected static function getServiceProviderClass(): string
+    protected function getPackageProviders($app): array
     {
-        return ErrorPagesServiceProvider::class;
+        return [ErrorPagesServiceProvider::class];
     }
 
     protected function defineEnvironment($app): void
     {
+        $app['config']->set('app.key', 'base64:'.base64_encode(str_repeat('a', 32)));
         $app['config']->set('view.paths', [__DIR__.'/Fixtures/app-views']);
     }
 
