@@ -4,7 +4,9 @@
     "keywords": [
         "laravel",
         "error-pages",
-        "exceptions"
+        "exceptions",
+        "tallkit",
+        "http-errors"
     ],
     "homepage": "https://github.com/datalogix/laravel-error-pages",
     "license": "MIT",
@@ -62,7 +64,5 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
