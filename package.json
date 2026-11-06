@@ -1,4 +1,5 @@
 {
+    "private": true,
     "devDependencies": {
         "prettier": "^3.9.10",
         "prettier-plugin-blade": "^3.3.3",
