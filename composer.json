@@ -42,8 +42,13 @@
         }
     },
     "scripts": {
-        "lint": "vendor/bin/pint",
-        "test": "@php vendor/bin/pest"
+        "test": "@php vendor/bin/pest",
+        "lint": [
+            "@php vendor/bin/pint --test --blade",
+            "@php vendor/bin/phpstan analyse",
+            "@php vendor/bin/rector --dry-run"
+        ],
+        "format": "@php vendor/bin/pint --blade"
     },
     "extra": {
         "laravel": {
