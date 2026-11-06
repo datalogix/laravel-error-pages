@@ -11,6 +11,7 @@
 /.gitattributes export-ignore
 /.github export-ignore
 /.gitignore export-ignore
+/.prettierrc export-ignore
 /CHANGELOG.md export-ignore
 /CLAUDE.md export-ignore
 /README.md export-ignore
