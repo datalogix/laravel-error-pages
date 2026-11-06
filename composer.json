@@ -1,7 +1,11 @@
 {
     "name": "datalogix/laravel-error-pages",
     "description": "Renders custom HTTP error pages (404, 403, 500, ...) with translated copy, using TALLKit components when available.",
-    "keywords": ["laravel", "error-pages", "exceptions"],
+    "keywords": [
+        "laravel",
+        "error-pages",
+        "exceptions"
+    ],
     "homepage": "https://github.com/datalogix/laravel-error-pages",
     "license": "MIT",
     "type": "library",
