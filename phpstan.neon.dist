@@ -1,0 +1,14 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+        - config
+        - lang
+    ignoreErrors:
+        -
+            message: '#^Class TALLKit\\TALLKitServiceProvider not found\.$#'
+            identifier: class.notFound
+            path: src/ErrorPagesServiceProvider.php

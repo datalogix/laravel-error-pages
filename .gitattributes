@@ -18,5 +18,7 @@
 /composer.lock export-ignore
 /package-lock.json export-ignore
 /package.json export-ignore
+/phpstan.neon.dist export-ignore
 /phpunit.xml.dist export-ignore
+/rector.php export-ignore
 /tests export-ignore

@@ -22,9 +22,11 @@
         "symfony/http-kernel": "^7.2|^8.0"
     },
     "require-dev": {
+        "larastan/larastan": "^3.14",
         "laravel/pint": "^1.30",
         "orchestra/testbench": "^10.0|^11.0",
-        "pestphp/pest": "^3.8|^4.0|^5.0"
+        "pestphp/pest": "^3.8|^4.0|^5.0",
+        "rector/rector": "^2.8"
     },
     "suggest": {
         "datalogix/tallkit": "Renders prettier error pages using the TALLKit UI components"
