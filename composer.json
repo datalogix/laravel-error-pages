@@ -24,7 +24,7 @@
     "require-dev": {
         "laravel/pint": "^1.30",
         "orchestra/testbench": "^10.0|^11.0",
-        "phpunit/phpunit": "^11.5|^12.0|^13.0"
+        "pestphp/pest": "^3.8|^4.0|^5.0"
     },
     "suggest": {
         "datalogix/tallkit": "Renders prettier error pages using the TALLKit UI components"
@@ -41,7 +41,7 @@
     },
     "scripts": {
         "lint": "vendor/bin/pint",
-        "test": "vendor/bin/phpunit"
+        "test": "@php vendor/bin/pest"
     },
     "extra": {
         "laravel": {
@@ -51,7 +51,10 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
