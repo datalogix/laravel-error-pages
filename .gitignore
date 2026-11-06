@@ -21,6 +21,10 @@ Thumbs.db
 /composer.phar
 /clover.xml
 
+/.env
+/build/
+/coverage/
+
 /phpunit.xml
 
 /package-lock.json
