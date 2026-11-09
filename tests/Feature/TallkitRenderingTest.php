@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\View;
 use Illuminate\View\ViewException;

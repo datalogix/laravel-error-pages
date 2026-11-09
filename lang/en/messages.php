@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'back_home' => 'Back to home',
     'go_back' => 'Go back and try again',

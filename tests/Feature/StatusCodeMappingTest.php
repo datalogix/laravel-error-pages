@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 test('mapped status code uses its own copy', function (int $code) {
     $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
 
