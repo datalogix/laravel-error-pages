@@ -94,6 +94,9 @@ class ErrorPagesServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * @return array{url: string, label: string}|null
+     */
     protected function resolveAction(int $code, string $locale): ?array
     {
         $action = fn (string $url, string $label) => [
