@@ -90,7 +90,6 @@ If the TALLKit page itself fails to render (e.g. a missing Vite manifest or an u
 ```bash
 composer install
 npm install # Prettier plugins required by `pint --blade`
-git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
 - `composer test` — run the test suite
