@@ -70,6 +70,37 @@ test('untranslated locale uses a non english fallback locale copy', function () 
     $response->assertSee($ptBr[404]['title']);
 });
 
+test('untranslated code uses the default copy of the chosen locale', function () {
+    $en = require dirname(__DIR__, 2).'/lang/en/messages.php';
+
+    app('translator')->addLines([
+        'messages.default.title' => 'Algo salió mal',
+        'messages.default.description' => 'Inténtalo de nuevo.',
+        'messages.back_home' => 'Volver al inicio',
+    ], 'es', 'error-pages');
+    App::setLocale('es');
+
+    $response = $this->get('/boom/404');
+
+    $response->assertStatus(404);
+    $response->assertSee('<html lang="es">', false);
+    $response->assertSee('Algo salió mal');
+    $response->assertDontSee($en[404]['title']);
+});
+
+test('missing fallback locale falls back to english copy', function () {
+    $en = require dirname(__DIR__, 2).'/lang/en/messages.php';
+
+    App::setLocale('de');
+    app('translator')->setFallback(null);
+
+    $response = $this->get('/boom/404');
+
+    $response->assertStatus(404);
+    $response->assertSee('<html lang="en">', false);
+    $response->assertSee($en[404]['title']);
+});
+
 test('original exception headers are preserved', function () {
     $response = $this->get('/boom-headers');
 

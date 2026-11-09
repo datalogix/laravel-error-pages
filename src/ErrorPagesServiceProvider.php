@@ -64,10 +64,10 @@ class ErrorPagesServiceProvider extends ServiceProvider
             }
 
             $locale = Arr::first(
-                [app()->getLocale(), Lang::getFallback()],
+                array_filter([app()->getLocale(), Lang::getFallback()]),
                 fn (string $locale) => Lang::hasForLocale('error-pages::messages.default', $locale),
             ) ?? 'en';
-            $key = Lang::has("error-pages::messages.{$code}", $locale) ? $code : 'default';
+            $key = Lang::hasForLocale("error-pages::messages.{$code}", $locale) ? $code : 'default';
             $copy = trans("error-pages::messages.{$key}", [], $locale);
 
             $description = config('error-pages.show_exception_message', false) && $e->getMessage() !== ''
