@@ -11,7 +11,7 @@ return [
     ],
 
     401 => [
-        'title' => 'Faça login para continuar',
+        'title' => 'Entre para continuar',
         'description' => 'Você precisa entrar para poder ver esta página.',
     ],
 
@@ -27,7 +27,7 @@ return [
 
     419 => [
         'title' => 'Sua sessão expirou',
-        'description' => 'Por segurança, desconectamos você após um tempo. Atualize a página e tente novamente.',
+        'description' => 'Por segurança, desconectamos você após um tempo. Volte e tente novamente.',
     ],
 
     429 => [

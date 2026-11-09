@@ -3,6 +3,8 @@
 namespace Datalogix\ErrorPages;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -37,7 +39,13 @@ class ErrorPagesServiceProvider extends ServiceProvider
 
     protected function bootRenderable()
     {
-        app(ExceptionHandler::class)->renderable(function (HttpExceptionInterface $e, $request) {
+        $handler = $this->app->make(ExceptionHandler::class);
+
+        if (! method_exists($handler, 'renderable')) {
+            return;
+        }
+
+        $handler->renderable(function (HttpExceptionInterface $e, Request $request) {
             if (! config('error-pages.enabled', true) || $request->expectsJson()) {
                 return;
             }
@@ -45,7 +53,11 @@ class ErrorPagesServiceProvider extends ServiceProvider
             $code = $e->getStatusCode();
             $codes = config('error-pages.codes');
 
-            if ($codes !== null && ! in_array($code, $codes)) {
+            if (is_int($codes) || (is_string($codes) && trim($codes) !== '')) {
+                $codes = array_map(intval(...), explode(',', (string) $codes));
+            }
+
+            if (is_array($codes) && ! in_array($code, $codes)) {
                 return;
             }
 
@@ -53,8 +65,11 @@ class ErrorPagesServiceProvider extends ServiceProvider
                 return;
             }
 
-            $locale = Lang::has('error-pages::messages.default') ? app()->getLocale() : 'en';
-            $key = Lang::has("error-pages::messages.{$code}", $locale) ? $code : 'default';
+            $locale = Arr::first(
+                array_filter([app()->getLocale(), Lang::getFallback()]),
+                fn (string $locale) => Lang::hasForLocale('error-pages::messages.default', $locale),
+            ) ?? 'en';
+            $key = Lang::hasForLocale("error-pages::messages.{$code}", $locale) ? $code : 'default';
             $copy = trans("error-pages::messages.{$key}", [], $locale);
 
             $description = config('error-pages.show_exception_message', false) && $e->getMessage() !== ''
@@ -81,6 +96,9 @@ class ErrorPagesServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * @return array{url: string, label: string}|null
+     */
     protected function resolveAction(int $code, string $locale): ?array
     {
         $action = fn (string $url, string $label) => [

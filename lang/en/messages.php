@@ -27,7 +27,7 @@ return [
 
     419 => [
         'title' => 'Your session has expired',
-        'description' => 'For your security we signed you out after a while. Please refresh the page and try again.',
+        'description' => 'For your security we signed you out after a while. Please go back and try again.',
     ],
 
     429 => [

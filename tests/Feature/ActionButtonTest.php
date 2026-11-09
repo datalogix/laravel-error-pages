@@ -1,61 +1,48 @@
 <?php
 
-namespace Datalogix\ErrorPages\Tests\Feature;
-
-use Datalogix\ErrorPages\Tests\TestCase;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+use TALLKit\TALLKitServiceProvider;
 
-class ActionButtonTest extends TestCase
-{
-    public function test_default_action_links_to_home(): void
-    {
-        $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
-
-        $response = $this->get('/boom/404');
-
-        $response->assertSee('href="'.url('/').'"', false);
-        $response->assertSee($messages['back_home']);
+test('action points to the expected url', function (bool $tallkit, string $uri, ?string $referer, bool $login, string $url, string $label) {
+    if ($tallkit) {
+        Http::fake();
+        $this->app->register(TALLKitServiceProvider::class);
     }
 
-    public function test_maintenance_page_has_no_action(): void
-    {
-        $response = $this->get('/boom/503');
-
-        $response->assertStatus(503);
-        $response->assertSee('class="badge"', false);
-        $response->assertDontSee('class="button"', false);
-    }
-
-    public function test_unauthorized_links_to_login_when_route_exists(): void
-    {
-        $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
-
+    if ($login) {
         Route::get('/login', fn () => 'login')->name('login');
-        Route::getRoutes()->refreshNameLookups();
-
-        $response = $this->get('/boom/401');
-
-        $response->assertSee('href="'.url('/login').'"', false);
-        $response->assertSee($messages['sign_in']);
     }
 
-    public function test_unauthorized_links_to_home_without_login_route(): void
-    {
-        $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $response = $referer ? $this->from($referer)->get($uri) : $this->get($uri);
 
-        $response = $this->get('/boom/401');
+    $response->assertSee('href="'.url($url).'"', false);
+    $response->assertSee(messages()[$label]);
+    $tallkit ? $response->assertDontSee('class="badge"', false) : $response->assertSee('class="badge"', false);
+})->with(['fallback' => false, 'tallkit' => true])->with([
+    'home' => ['/boom/404', null, false, '/', 'back_home'],
+    'login' => ['/boom/401', null, true, '/login', 'sign_in'],
+    '401 without login' => ['/boom/401', null, false, '/', 'back_home'],
+    '419 with referer' => ['/boom/419', '/checkout', false, '/checkout', 'go_back'],
+    '419 without referer' => ['/boom/419', null, false, '/', 'go_back'],
+]);
 
-        $response->assertSee('href="'.url('/').'"', false);
-        $response->assertSee($messages['back_home']);
+test('expired session links back to the referer header', function (bool $tallkit) {
+    if ($tallkit) {
+        Http::fake();
+        $this->app->register(TALLKitServiceProvider::class);
     }
 
-    public function test_expired_session_links_back_to_previous_page(): void
-    {
-        $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $response = $this->withHeader('referer', url('/checkout'))->get('/boom/419');
 
-        $response = $this->from('/checkout')->get('/boom/419');
+    $response->assertSee('href="'.url('/checkout').'"', false);
+    $response->assertSee(messages()['go_back']);
+})->with(['fallback' => false, 'tallkit' => true]);
 
-        $response->assertSee('href="'.url('/checkout').'"', false);
-        $response->assertSee($messages['go_back']);
-    }
-}
+test('maintenance page has no action', function () {
+    $response = $this->get('/boom/503');
+
+    $response->assertStatus(503);
+    $response->assertSee('class="badge"', false);
+    $response->assertDontSee('class="button"', false);
+});

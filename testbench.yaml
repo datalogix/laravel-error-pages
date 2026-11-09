@@ -1,0 +1,12 @@
+providers:
+  - Datalogix\ErrorPages\ErrorPagesServiceProvider
+
+env:
+  APP_KEY: base64:YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE=
+  CACHE_STORE: array
+
+workbench:
+  start: /boom/404
+  install: false
+  discovers:
+    web: true

@@ -5,12 +5,13 @@ namespace Datalogix\ErrorPages\Tests;
 use Datalogix\ErrorPages\ErrorPagesServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use RuntimeException;
+use TailwindMerge\Laravel\TailwindMergeServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
     protected function getPackageProviders($app): array
     {
-        return [ErrorPagesServiceProvider::class];
+        return array_filter([ErrorPagesServiceProvider::class, TailwindMergeServiceProvider::class], class_exists(...));
     }
 
     protected function defineEnvironment($app): void

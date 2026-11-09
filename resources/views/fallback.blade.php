@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $locale) }}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
     <title>{{ $code }} — {{ $title }}</title>
     <style>
         :root {
             color-scheme: light dark;
         }
 
-        *, *::before, *::after {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
         }
@@ -23,7 +27,15 @@
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
-            font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family:
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                'Segoe UI',
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
             background: #f8fafc;
             text-align: center;
         }
@@ -35,7 +47,9 @@
             border-radius: 1rem;
             background: #fff;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.12);
+            box-shadow:
+                0 1px 2px rgba(15, 23, 42, 0.04),
+                0 8px 24px -12px rgba(15, 23, 42, 0.12);
         }
 
         .badge {
@@ -88,19 +102,35 @@
         }
 
         @media (prefers-color-scheme: dark) {
-            body { background: #0b1120; }
+            body {
+                background: #0b1120;
+            }
 
             .card {
                 background: #0f172a;
                 border-color: #1e293b;
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+                box-shadow:
+                    0 1px 2px rgba(0, 0, 0, 0.2),
+                    0 8px 24px -12px rgba(0, 0, 0, 0.5);
             }
 
-            .badge { background: #1e293b; color: #cbd5e1; }
-            h1 { color: #f1f5f9; }
-            p.description { color: #94a3b8; }
-            .button { background: #e2e8f0; color: #0f172a; }
-            .button:hover { background: #cbd5e1; }
+            .badge {
+                background: #1e293b;
+                color: #cbd5e1;
+            }
+            h1 {
+                color: #f1f5f9;
+            }
+            p.description {
+                color: #94a3b8;
+            }
+            .button {
+                background: #e2e8f0;
+                color: #0f172a;
+            }
+            .button:hover {
+                background: #cbd5e1;
+            }
         }
     </style>
 </head>
@@ -110,9 +140,7 @@
         <h1>{{ $title }}</h1>
         <p class="description">{{ $description }}</p>
         @if ($action)
-            <a class="button" href="{{ $action['url'] }}">
-                {{ $action['label'] }}
-            </a>
+            <a class="button" href="{{ $action['url'] }}"> {{ $action['label'] }} </a>
         @endif
     </div>
 </body>

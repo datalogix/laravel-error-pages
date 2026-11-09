@@ -1,37 +1,23 @@
 <?php
 
-namespace Datalogix\ErrorPages\Tests\Feature;
+test('mapped status code uses its own copy', function (int $code) {
+    $messages = messages();
 
-use Datalogix\ErrorPages\Tests\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
+    $response = $this->get("/boom/{$code}");
 
-class StatusCodeMappingTest extends TestCase
-{
-    #[DataProvider('mappedStatusCodes')]
-    public function test_mapped_status_code_uses_its_own_copy(int $code): void
-    {
-        $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $response->assertStatus($code);
+    $response->assertSee($messages[$code]['title']);
+    $response->assertSee($messages[$code]['description']);
+})->with('mappedStatusCodes');
 
-        $response = $this->get("/boom/{$code}");
+dataset('mappedStatusCodes', fn () => array_filter(array_keys(messages()), is_int(...)));
 
-        $response->assertStatus($code);
-        $response->assertSee($messages[$code]['title']);
-        $response->assertSee($messages[$code]['description']);
-    }
+test('unmapped status code falls back to default copy', function () {
+    $messages = messages();
 
-    public static function mappedStatusCodes(): array
-    {
-        return [[400], [401], [403], [404], [419], [429], [500], [502], [503], [504]];
-    }
+    $response = $this->post('/only-get');
 
-    public function test_unmapped_status_code_falls_back_to_default_copy(): void
-    {
-        $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
-
-        $response = $this->post('/only-get');
-
-        $response->assertStatus(405);
-        $response->assertSee($messages['default']['title']);
-        $response->assertSee($messages['default']['description']);
-    }
-}
+    $response->assertStatus(405);
+    $response->assertSee($messages['default']['title']);
+    $response->assertSee($messages['default']['description']);
+});
