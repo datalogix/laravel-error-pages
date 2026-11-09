@@ -13,8 +13,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 CI runs `.github/workflows/datalogix.yml`, which calls the shared `datalogix/workflows` `package.yml@v2` pipeline.
 
-- Issues and pull requests: English
-
 ## Architecture
 
 The package is a single service provider, `src/ErrorPagesServiceProvider.php`. It registers a `renderable` callback on the app's `ExceptionHandler` for `HttpExceptionInterface`; `bootRenderable()` skips registration when the bound handler has no `renderable()` method. That callback holds all of the runtime logic:
@@ -31,3 +29,7 @@ TALLKit is only a `suggest` dependency (and a `require-dev` one for tests), so t
 - Pest, bound to `tests/TestCase.php` through `uses()` in `tests/Pest.php`. `TestCase` extends Orchestra Testbench, loads `ErrorPagesServiceProvider` and `TailwindMergeServiceProvider`, sets `app.key`, points `view.paths` to `tests/Fixtures/app-views` (which has an `errors/418.blade.php` app override), and defines the `/boom/*` routes that trigger exceptions.
 - TALLKit tests use the real `datalogix/tallkit` (require-dev): they register `TALLKit\TALLKitServiceProvider` per test and call `Http::fake()` so icon fetching never hits the network. To isolate selection and fallback, they use `View::prependNamespace('error-pages', ...)` to swap in `Fixtures/views` (a stand-in for the tallkit view) or `Fixtures/broken-views` (a view that throws).
 - Tests read expected copy straight from `lang/{locale}/messages.php` instead of hardcoding strings; `TranslationsTest` checks that every locale has the same keys as `en`.
+
+## Conventions
+
+- Issues and pull requests: English
