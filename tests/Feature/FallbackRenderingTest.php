@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\App;
 
 test('fallback view renders for an http exception', function () {
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $messages = messages();
 
     $response = $this->get('/boom/403');
 
@@ -15,8 +15,8 @@ test('fallback view renders for an http exception', function () {
 });
 
 test('fallback view uses locale specific copy', function () {
-    $en = require dirname(__DIR__, 2).'/lang/en/messages.php';
-    $ptBr = require dirname(__DIR__, 2).'/lang/pt_BR/messages.php';
+    $en = messages();
+    $ptBr = messages('pt_BR');
 
     App::setLocale('pt_BR');
 
@@ -28,48 +28,25 @@ test('fallback view uses locale specific copy', function () {
     $response->assertDontSee($en[403]['title']);
 });
 
-test('untranslated locale falls back to english copy', function () {
-    $en = require dirname(__DIR__, 2).'/lang/en/messages.php';
-
-    App::setLocale('es');
-    app('translator')->setFallback('es');
-
-    $response = $this->get('/boom/404');
-
-    $response->assertStatus(404);
-    $response->assertSee('<html lang="en">', false);
-    $response->assertSee($en[404]['title']);
-    $response->assertSee($en['back_home']);
-});
-
-test('untranslated locale uses the fallback locale copy', function () {
-    $en = require dirname(__DIR__, 2).'/lang/en/messages.php';
-
+test('untranslated locale resolves copy through the fallback chain', function (?string $fallback, string $expected) {
     App::setLocale('fr');
-    app('translator')->setFallback('en');
+    app('translator')->setFallback($fallback);
 
     $response = $this->get('/boom/404');
 
     $response->assertStatus(404);
-    $response->assertSee('<html lang="en">', false);
-    $response->assertSee($en[404]['title']);
-});
-
-test('untranslated locale uses a non english fallback locale copy', function () {
-    $ptBr = require dirname(__DIR__, 2).'/lang/pt_BR/messages.php';
-
-    App::setLocale('fr');
-    app('translator')->setFallback('pt_BR');
-
-    $response = $this->get('/boom/404');
-
-    $response->assertStatus(404);
-    $response->assertSee('<html lang="pt-BR">', false);
-    $response->assertSee($ptBr[404]['title']);
-});
+    $response->assertSee('<html lang="'.str_replace('_', '-', $expected).'">', false);
+    $response->assertSee(messages($expected)[404]['title']);
+    $response->assertSee(messages($expected)['back_home']);
+})->with([
+    'english fallback' => ['en', 'en'],
+    'non english fallback' => ['pt_BR', 'pt_BR'],
+    'untranslated fallback' => ['fr', 'en'],
+    'no fallback' => [null, 'en'],
+]);
 
 test('untranslated code uses the default copy of the chosen locale', function () {
-    $en = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $en = messages();
 
     app('translator')->addLines([
         'messages.default.title' => 'Algo salió mal',
@@ -83,20 +60,8 @@ test('untranslated code uses the default copy of the chosen locale', function ()
     $response->assertStatus(404);
     $response->assertSee('<html lang="es">', false);
     $response->assertSee('Algo salió mal');
+    $response->assertSee('Volver al inicio');
     $response->assertDontSee($en[404]['title']);
-});
-
-test('missing fallback locale falls back to english copy', function () {
-    $en = require dirname(__DIR__, 2).'/lang/en/messages.php';
-
-    App::setLocale('de');
-    app('translator')->setFallback(null);
-
-    $response = $this->get('/boom/404');
-
-    $response->assertStatus(404);
-    $response->assertSee('<html lang="en">', false);
-    $response->assertSee($en[404]['title']);
 });
 
 test('original exception headers are preserved', function () {

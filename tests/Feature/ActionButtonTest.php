@@ -1,15 +1,31 @@
 <?php
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+use TALLKit\TALLKitServiceProvider;
 
-test('default action links to home', function () {
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+test('action points to the expected url', function (bool $tallkit, string $uri, ?string $referer, bool $login, string $url, string $label) {
+    if ($tallkit) {
+        Http::fake();
+        $this->app->register(TALLKitServiceProvider::class);
+    }
 
-    $response = $this->get('/boom/404');
+    if ($login) {
+        Route::get('/login', fn () => 'login')->name('login');
+    }
 
-    $response->assertSee('href="'.url('/').'"', false);
-    $response->assertSee($messages['back_home']);
-});
+    $response = $referer ? $this->from($referer)->get($uri) : $this->get($uri);
+
+    $response->assertSee('href="'.url($url).'"', false);
+    $response->assertSee(messages()[$label]);
+    $tallkit ? $response->assertDontSee('class="badge"', false) : $response->assertSee('class="badge"', false);
+})->with(['fallback' => false, 'tallkit' => true])->with([
+    'home' => ['/boom/404', null, false, '/', 'back_home'],
+    'login' => ['/boom/401', null, true, '/login', 'sign_in'],
+    '401 without login' => ['/boom/401', null, false, '/', 'back_home'],
+    '419 with referer' => ['/boom/419', '/checkout', false, '/checkout', 'go_back'],
+    '419 without referer' => ['/boom/419', null, false, '/', 'go_back'],
+]);
 
 test('maintenance page has no action', function () {
     $response = $this->get('/boom/503');
@@ -17,43 +33,4 @@ test('maintenance page has no action', function () {
     $response->assertStatus(503);
     $response->assertSee('class="badge"', false);
     $response->assertDontSee('class="button"', false);
-});
-
-test('unauthorized links to login when route exists', function () {
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
-
-    Route::get('/login', fn () => 'login')->name('login');
-    Route::getRoutes()->refreshNameLookups();
-
-    $response = $this->get('/boom/401');
-
-    $response->assertSee('href="'.url('/login').'"', false);
-    $response->assertSee($messages['sign_in']);
-});
-
-test('unauthorized links to home without login route', function () {
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
-
-    $response = $this->get('/boom/401');
-
-    $response->assertSee('href="'.url('/').'"', false);
-    $response->assertSee($messages['back_home']);
-});
-
-test('expired session links back to previous page', function () {
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
-
-    $response = $this->from('/checkout')->get('/boom/419');
-
-    $response->assertSee('href="'.url('/checkout').'"', false);
-    $response->assertSee($messages['go_back']);
-});
-
-test('expired session without referer links to home', function () {
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
-
-    $response = $this->get('/boom/419');
-
-    $response->assertSee('href="'.url('/').'"', false);
-    $response->assertSee($messages['go_back']);
 });

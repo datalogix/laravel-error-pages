@@ -15,21 +15,19 @@ test('disabled config lets exception pass through', function () {
     $response->assertDontSee('class="badge"', false);
 });
 
-test('comma separated codes config restricts like an array', function () {
-    config()->set('error-pages.codes', '403, 404');
+test('codes config only intercepts listed codes', function (mixed $codes) {
+    config()->set('error-pages.codes', $codes);
 
     $this->get('/boom/404')->assertStatus(404)->assertSee('class="badge"', false);
     $this->get('/boom/500')->assertStatus(500)->assertDontSee('class="badge"', false);
-});
+})->with([
+    'array' => [[403, 404]],
+    'string array' => [['403', '404']],
+    'comma string' => ['403, 404'],
+    'integer' => [404],
+]);
 
-test('integer codes config restricts to that code', function () {
-    config()->set('error-pages.codes', 404);
-
-    $this->get('/boom/404')->assertStatus(404)->assertSee('class="badge"', false);
-    $this->get('/boom/403')->assertStatus(403)->assertDontSee('class="badge"', false);
-});
-
-test('empty or invalid codes config intercepts every code', function (mixed $codes) {
+test('blank string or non array codes config intercepts every code', function (mixed $codes) {
     config()->set('error-pages.codes', $codes);
 
     $this->get('/boom/404')->assertStatus(404)->assertSee('class="badge"', false);
@@ -38,13 +36,6 @@ test('empty or invalid codes config intercepts every code', function (mixed $cod
 test('empty codes array intercepts no code', function () {
     config()->set('error-pages.codes', []);
 
-    $this->get('/boom/404')->assertStatus(404)->assertDontSee('class="badge"', false);
-});
-
-test('codes restriction only intercepts listed codes', function () {
-    config()->set('error-pages.codes', [403]);
-
-    $this->get('/boom/403')->assertStatus(403)->assertSee('class="badge"', false);
     $this->get('/boom/404')->assertStatus(404)->assertDontSee('class="badge"', false);
 });
 
@@ -57,7 +48,7 @@ test('config changes at runtime are respected', function () {
 });
 
 test('exception message is hidden by default', function () {
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $messages = messages();
 
     $response = $this->get('/boom-message');
 
@@ -67,7 +58,7 @@ test('exception message is hidden by default', function () {
 });
 
 test('exception message replaces description when enabled', function () {
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $messages = messages();
 
     config()->set('error-pages.show_exception_message', true);
 
@@ -96,7 +87,7 @@ test('exception message is escaped', function (bool $tallkit) {
 })->with(['fallback' => false, 'tallkit' => true]);
 
 test('empty exception message keeps translated description', function () {
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $messages = messages();
 
     config()->set('error-pages.show_exception_message', true);
 

@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\View\ViewException;
 use TALLKit\TALLKitServiceProvider;
@@ -14,7 +13,7 @@ test('tallkit view is selected and rendered when tallkit provider is loaded', fu
     $this->app->register(TALLKitServiceProvider::class);
     View::prependNamespace('error-pages', __DIR__.'/../Fixtures/views');
 
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $messages = messages();
 
     $response = $this->get('/boom/404');
 
@@ -40,7 +39,7 @@ test('fallback view is used and failure reported when tallkit view throws', func
     $this->app->register(TALLKitServiceProvider::class);
     View::prependNamespace('error-pages', __DIR__.'/../Fixtures/broken-views');
 
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $messages = messages();
 
     $response = $this->get('/boom/500');
 
@@ -54,7 +53,7 @@ test('fallback view is used and failure reported when tallkit view throws', func
 test('real tallkit view renders the package copy and title', function () {
     $this->app->register(TALLKitServiceProvider::class);
 
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $messages = messages();
 
     $response = $this->get('/boom/404');
 
@@ -69,27 +68,13 @@ test('real tallkit view renders the package copy and title', function () {
 test('real tallkit view has no button for 503', function () {
     $this->app->register(TALLKitServiceProvider::class);
 
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $messages = messages();
 
     $response = $this->get('/boom/503');
 
     $response->assertStatus(503);
     $response->assertDontSee($messages['back_home']);
     $response->assertDontSee('Go back home');
-    $response->assertDontSee('class="badge"', false);
-});
-
-test('real tallkit view links 401 to the login route', function () {
-    Route::get('/login', fn () => 'login')->name('login');
-    $this->app->register(TALLKitServiceProvider::class);
-
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
-
-    $response = $this->get('/boom/401');
-
-    $response->assertStatus(401);
-    $response->assertSee('href="'.url('/login').'"', false);
-    $response->assertSee($messages['sign_in']);
     $response->assertDontSee('class="badge"', false);
 });
 
@@ -106,7 +91,7 @@ test('real tallkit view keeps the exception headers', function () {
 test('real tallkit view uses the locale of the copy', function () {
     $this->app->register(TALLKitServiceProvider::class);
 
-    $ptBr = require dirname(__DIR__, 2).'/lang/pt_BR/messages.php';
+    $ptBr = messages('pt_BR');
 
     App::setLocale('pt_BR');
 
