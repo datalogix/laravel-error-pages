@@ -3,6 +3,7 @@
 namespace Datalogix\ErrorPages;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -53,7 +54,10 @@ class ErrorPagesServiceProvider extends ServiceProvider
                 return;
             }
 
-            $locale = Lang::has('error-pages::messages.default') ? app()->getLocale() : 'en';
+            $locale = Arr::first(
+                [app()->getLocale(), Lang::getFallback()],
+                fn (string $locale) => Lang::hasForLocale('error-pages::messages.default', $locale),
+            ) ?? 'en';
             $key = Lang::has("error-pages::messages.{$code}", $locale) ? $code : 'default';
             $copy = trans("error-pages::messages.{$key}", [], $locale);
 

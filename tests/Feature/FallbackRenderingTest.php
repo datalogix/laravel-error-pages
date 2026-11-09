@@ -42,6 +42,32 @@ test('untranslated locale falls back to english copy', function () {
     $response->assertSee($en['back_home']);
 });
 
+test('untranslated locale uses the fallback locale copy', function () {
+    $en = require dirname(__DIR__, 2).'/lang/en/messages.php';
+
+    App::setLocale('fr');
+    app('translator')->setFallback('en');
+
+    $response = $this->get('/boom/404');
+
+    $response->assertStatus(404);
+    $response->assertSee('<html lang="en">', false);
+    $response->assertSee($en[404]['title']);
+});
+
+test('untranslated locale uses a non english fallback locale copy', function () {
+    $ptBr = require dirname(__DIR__, 2).'/lang/pt_BR/messages.php';
+
+    App::setLocale('fr');
+    app('translator')->setFallback('pt_BR');
+
+    $response = $this->get('/boom/404');
+
+    $response->assertStatus(404);
+    $response->assertSee('<html lang="pt-BR">', false);
+    $response->assertSee($ptBr[404]['title']);
+});
+
 test('original exception headers are preserved', function () {
     $response = $this->get('/boom-headers');
 
