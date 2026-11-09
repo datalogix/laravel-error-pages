@@ -14,11 +14,25 @@ test('disabled config lets exception pass through', function () {
     $response->assertDontSee('class="badge"', false);
 });
 
-test('non array codes config intercepts every code', function () {
-    config()->set('error-pages.codes', '403');
+test('comma separated codes config restricts like an array', function () {
+    config()->set('error-pages.codes', '403, 404');
 
     $this->get('/boom/404')->assertStatus(404)->assertSee('class="badge"', false);
+    $this->get('/boom/500')->assertStatus(500)->assertDontSee('class="badge"', false);
 });
+
+test('integer codes config restricts to that code', function () {
+    config()->set('error-pages.codes', 404);
+
+    $this->get('/boom/404')->assertStatus(404)->assertSee('class="badge"', false);
+    $this->get('/boom/403')->assertStatus(403)->assertDontSee('class="badge"', false);
+});
+
+test('empty or invalid codes config intercepts every code', function (mixed $codes) {
+    config()->set('error-pages.codes', $codes);
+
+    $this->get('/boom/404')->assertStatus(404)->assertSee('class="badge"', false);
+})->with(['', ' ', true]);
 
 test('codes restriction only intercepts listed codes', function () {
     config()->set('error-pages.codes', [403]);

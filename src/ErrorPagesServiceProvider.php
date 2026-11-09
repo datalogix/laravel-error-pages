@@ -55,6 +55,10 @@ class ErrorPagesServiceProvider extends ServiceProvider
             $code = $e->getStatusCode();
             $codes = config('error-pages.codes');
 
+            if (is_int($codes) || (is_string($codes) && trim($codes) !== '')) {
+                $codes = array_map(intval(...), explode(',', (string) $codes));
+            }
+
             if (is_array($codes) && ! in_array($code, $codes)) {
                 return;
             }

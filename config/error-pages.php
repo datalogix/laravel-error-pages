@@ -6,7 +6,7 @@ return [
     // Enable or disable the custom error pages entirely.
     'enabled' => true,
 
-    // Restrict rendering to specific status codes, e.g. [403, 404, 500].
+    // Restrict rendering to specific status codes, e.g. [403, 404, 500] or "403,404,500".
     // Leave as `null` to handle every HTTP exception.
     'codes' => null,
 
