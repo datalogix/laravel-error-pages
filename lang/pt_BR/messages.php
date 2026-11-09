@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 return [
     'back_home' => 'Voltar ao início',
     'go_back' => 'Voltar e tentar novamente',

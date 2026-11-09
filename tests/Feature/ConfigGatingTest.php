@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use Datalogix\ErrorPages\ErrorPagesServiceProvider;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 

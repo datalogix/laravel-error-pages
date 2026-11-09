@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use Illuminate\Support\Facades\App;
 
 test('fallback view renders for an http exception', function () {

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 return [
     // Enable or disable the custom error pages entirely.
     'enabled' => true,

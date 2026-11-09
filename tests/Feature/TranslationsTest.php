@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use Illuminate\Support\Arr;
 
 test('every locale has the same message keys as english', function (string $file) {
