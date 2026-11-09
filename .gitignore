@@ -21,11 +21,12 @@ Thumbs.db
 /composer.lock
 /composer.phar
 /clover.xml
-
-/.env
 /build/
 /coverage/
 
+/.env
+
+/phpstan.neon
 /phpunit.xml
 
 /package-lock.json
