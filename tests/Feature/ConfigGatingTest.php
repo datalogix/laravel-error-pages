@@ -15,16 +15,19 @@ test('disabled config lets exception pass through', function () {
     $response->assertDontSee('class="badge"', false);
 });
 
-test('codes config only intercepts listed codes', function (mixed $codes) {
+test('codes config only intercepts listed codes', function (mixed $codes, array $listed) {
     config()->set('error-pages.codes', $codes);
 
-    $this->get('/boom/404')->assertStatus(404)->assertSee('class="badge"', false);
+    foreach ($listed as $code) {
+        $this->get("/boom/{$code}")->assertStatus($code)->assertSee('class="badge"', false);
+    }
+
     $this->get('/boom/500')->assertStatus(500)->assertDontSee('class="badge"', false);
 })->with([
-    'array' => [[403, 404]],
-    'string array' => [['403', '404']],
-    'comma string' => ['403, 404'],
-    'integer' => [404],
+    'array' => [[403, 404], [403, 404]],
+    'string array' => [['403', '404'], [403, 404]],
+    'comma string' => ['403, 404', [403, 404]],
+    'integer' => [404, [404]],
 ]);
 
 test('blank string or non array codes config intercepts every code', function (mixed $codes) {
