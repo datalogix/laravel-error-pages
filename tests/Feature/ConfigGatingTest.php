@@ -2,6 +2,9 @@
 
 use Datalogix\ErrorPages\ErrorPagesServiceProvider;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
+use TALLKit\TALLKitServiceProvider;
 
 test('disabled config lets exception pass through', function () {
     config()->set('error-pages.enabled', false);
@@ -31,6 +34,12 @@ test('empty or invalid codes config intercepts every code', function (mixed $cod
 
     $this->get('/boom/404')->assertStatus(404)->assertSee('class="badge"', false);
 })->with(['', ' ', true]);
+
+test('empty codes array intercepts no code', function () {
+    config()->set('error-pages.codes', []);
+
+    $this->get('/boom/404')->assertStatus(404)->assertDontSee('class="badge"', false);
+});
 
 test('codes restriction only intercepts listed codes', function () {
     config()->set('error-pages.codes', [403]);
@@ -69,6 +78,22 @@ test('exception message replaces description when enabled', function () {
     $response->assertSee('Upgrade your plan to access this');
     $response->assertDontSee($messages[403]['description']);
 });
+
+test('exception message is escaped', function (bool $tallkit) {
+    if ($tallkit) {
+        Http::fake();
+        $this->app->register(TALLKitServiceProvider::class);
+    }
+
+    Route::get('/boom-html', fn () => abort(403, '<script>alert(1)</script>'));
+    config()->set('error-pages.show_exception_message', true);
+
+    $response = $this->get('/boom-html');
+
+    $response->assertStatus(403);
+    $response->assertDontSee('<script>alert(1)</script>', false);
+    $response->assertSee('&lt;script&gt;alert(1)&lt;/script&gt;', false);
+})->with(['fallback' => false, 'tallkit' => true]);
 
 test('empty exception message keeps translated description', function () {
     $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';

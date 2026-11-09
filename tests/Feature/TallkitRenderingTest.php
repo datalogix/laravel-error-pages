@@ -93,6 +93,16 @@ test('real tallkit view links 401 to the login route', function () {
     $response->assertDontSee('class="badge"', false);
 });
 
+test('real tallkit view keeps the exception headers', function () {
+    $this->app->register(TALLKitServiceProvider::class);
+
+    $response = $this->post('/only-get');
+
+    $response->assertStatus(405);
+    $response->assertDontSee('class="badge"', false);
+    expect($response->headers->get('Allow'))->toContain('GET');
+});
+
 test('real tallkit view uses the locale of the copy', function () {
     $this->app->register(TALLKitServiceProvider::class);
 

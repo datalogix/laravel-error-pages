@@ -48,3 +48,12 @@ test('expired session links back to previous page', function () {
     $response->assertSee('href="'.url('/checkout').'"', false);
     $response->assertSee($messages['go_back']);
 });
+
+test('expired session without referer links to home', function () {
+    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+
+    $response = $this->get('/boom/419');
+
+    $response->assertSee('href="'.url('/').'"', false);
+    $response->assertSee($messages['go_back']);
+});
