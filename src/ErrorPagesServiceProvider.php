@@ -3,6 +3,7 @@
 namespace Datalogix\ErrorPages;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
@@ -38,7 +39,13 @@ class ErrorPagesServiceProvider extends ServiceProvider
 
     protected function bootRenderable()
     {
-        app(ExceptionHandler::class)->renderable(function (HttpExceptionInterface $e, $request) {
+        $handler = $this->app->make(ExceptionHandler::class);
+
+        if (! method_exists($handler, 'renderable')) {
+            return;
+        }
+
+        $handler->renderable(function (HttpExceptionInterface $e, Request $request) {
             if (! config('error-pages.enabled', true) || $request->expectsJson()) {
                 return;
             }
@@ -46,7 +53,7 @@ class ErrorPagesServiceProvider extends ServiceProvider
             $code = $e->getStatusCode();
             $codes = config('error-pages.codes');
 
-            if ($codes !== null && ! in_array($code, $codes)) {
+            if (is_array($codes) && ! in_array($code, $codes)) {
                 return;
             }
 

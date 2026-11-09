@@ -1,5 +1,8 @@
 <?php
 
+use Datalogix\ErrorPages\ErrorPagesServiceProvider;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+
 test('disabled config lets exception pass through', function () {
     config()->set('error-pages.enabled', false);
 
@@ -7,6 +10,12 @@ test('disabled config lets exception pass through', function () {
 
     $response->assertStatus(404);
     $response->assertDontSee('class="badge"', false);
+});
+
+test('non array codes config intercepts every code', function () {
+    config()->set('error-pages.codes', '403');
+
+    $this->get('/boom/404')->assertStatus(404)->assertSee('class="badge"', false);
 });
 
 test('codes restriction only intercepts listed codes', function () {
@@ -63,6 +72,24 @@ test('application error view takes precedence', function () {
     $response->assertDontSee('class="badge"', false);
 
     $this->get('/boom/404')->assertSee('class="badge"', false);
+});
+
+test('handlers without renderable are left untouched', function () {
+    $this->app->instance(ExceptionHandler::class, new class implements ExceptionHandler
+    {
+        public function report(Throwable $e) {}
+
+        public function shouldReport(Throwable $e)
+        {
+            return true;
+        }
+
+        public function render($request, Throwable $e) {}
+
+        public function renderForConsole($output, Throwable $e) {}
+    });
+
+    expect(fn () => (new ErrorPagesServiceProvider($this->app))->boot())->not->toThrow(Throwable::class);
 });
 
 test('json requests bypass the package', function () {

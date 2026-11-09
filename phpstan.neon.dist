@@ -12,3 +12,7 @@ parameters:
             message: '#^Class TALLKit\\TALLKitServiceProvider not found\.$#'
             identifier: class.notFound
             path: src/ErrorPagesServiceProvider.php
+        -
+            identifier: function.alreadyNarrowedType
+            path: src/ErrorPagesServiceProvider.php
+            count: 1
