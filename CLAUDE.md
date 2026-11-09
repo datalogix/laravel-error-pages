@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `npm install` — install Prettier and its Blade/Tailwind plugins (required by `pint --blade`)
 - `composer test` — run the Pest suite (also writes `clover.xml` and a coverage report)
-- `vendor/bin/pest --no-coverage --filter "default action links to home"` — run a single test
+- `vendor/bin/pest --no-coverage --filter "maintenance page has no action"` — run a single test
 - `vendor/bin/pest --no-coverage tests/Feature/ActionButtonTest.php` — run a single file
 - `composer lint` — check only: Pint (`--test --blade`), Larastan and Rector (`--dry-run`)
 - `composer format` — format PHP and Blade with Pint (`--blade`)
