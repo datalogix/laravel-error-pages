@@ -1,7 +1,7 @@
 <?php
 
 test('mapped status code uses its own copy', function (int $code) {
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $messages = messages();
 
     $response = $this->get("/boom/{$code}");
 
@@ -10,10 +10,10 @@ test('mapped status code uses its own copy', function (int $code) {
     $response->assertSee($messages[$code]['description']);
 })->with('mappedStatusCodes');
 
-dataset('mappedStatusCodes', fn () => array_filter(array_keys(require dirname(__DIR__, 2).'/lang/en/messages.php'), is_int(...)));
+dataset('mappedStatusCodes', fn () => array_filter(array_keys(messages()), is_int(...)));
 
 test('unmapped status code falls back to default copy', function () {
-    $messages = require dirname(__DIR__, 2).'/lang/en/messages.php';
+    $messages = messages();
 
     $response = $this->post('/only-get');
 
