@@ -13,7 +13,7 @@ abstract class TestCase extends BaseTestCase
 {
     protected function getPackageProviders($app): array
     {
-        return [ErrorPagesServiceProvider::class, TailwindMergeServiceProvider::class];
+        return array_filter([ErrorPagesServiceProvider::class, TailwindMergeServiceProvider::class], class_exists(...));
     }
 
     protected function defineEnvironment($app): void
