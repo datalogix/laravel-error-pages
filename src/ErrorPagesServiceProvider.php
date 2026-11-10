@@ -17,11 +17,11 @@ class ErrorPagesServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/error-pages.php', 'error-pages');
-        $this->loadTranslationsFrom(__DIR__.'/../lang', 'error-pages');
     }
 
     public function boot()
     {
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'error-pages');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'error-pages');
 
         if ($this->app->runningInConsole()) {
