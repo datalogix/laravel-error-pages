@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `vendor/bin/pest --no-coverage --filter "maintenance page has no action"` — run a single test
 - `vendor/bin/pest --no-coverage tests/Feature/ActionButtonTest.php` — run a single file
 - `composer lint` — check only: Pint (`--test --blade`), Larastan and Rector (`--dry-run`)
-- `composer format` — format PHP and Blade with Pint (`--blade`)
+- `composer format` — apply Rector, then format PHP and Blade with Pint (`--blade`)
 - `vendor/bin/testbench serve` — preview the pages at `/boom/{code}` through the workbench (`testbench.yaml`, `workbench/routes/web.php`); the Testbench skeleton ships its own `errors/503` view, so 503 shows Laravel's page
 
 CI runs `.github/workflows/datalogix.yml`, which calls the shared `datalogix/workflows` `package.yml@v2` pipeline.
