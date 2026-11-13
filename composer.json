@@ -48,10 +48,13 @@
         "test": "@php vendor/bin/pest",
         "lint": [
             "@php vendor/bin/pint --test --blade",
-            "@php vendor/bin/phpstan analyse",
+            "@php vendor/bin/phpstan analyse --memory-limit=1G",
             "@php vendor/bin/rector --dry-run"
         ],
-        "format": "@php vendor/bin/pint --blade"
+        "format": [
+            "@php vendor/bin/rector",
+            "@php vendor/bin/pint --blade"
+        ]
     },
     "extra": {
         "laravel": {

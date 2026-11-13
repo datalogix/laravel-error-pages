@@ -94,7 +94,7 @@ npm install # Prettier plugins required by `pint --blade`
 
 - `composer test` — run the test suite
 - `composer lint` — check formatting (Pint), static analysis (Larastan) and refactors (Rector)
-- `composer format` — format PHP and Blade files
+- `composer format` — apply Rector refactors and format PHP and Blade files
 
 ## Changelog
 
