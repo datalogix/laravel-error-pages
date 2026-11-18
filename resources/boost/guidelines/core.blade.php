@@ -13,7 +13,8 @@ Renders translated HTML pages for HTTP exceptions (`abort(404)`, `abort(403)`, .
 return [
     'enabled' => true,
     'codes' => [403, 404, 500], // null handles every HTTP exception
-    'show_exception_message' => false, // true shows abort(403, 'message') to end users
+    'show_exception_message' => false, // true (or 1) or codes like [403] show abort(403, 'message') to end users
+    'show_authorization_message' => true, // true (or 1) or codes like [403] show Response::deny('message') from policies and gates
 ];
 </code-snippet>
 @endverbatim

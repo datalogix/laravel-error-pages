@@ -61,11 +61,19 @@ return [
 
     // Show the exception message (e.g. abort(403, 'Upgrade your plan'))
     // instead of the translated description when it isn't empty.
+    // Use `true` or `false` (also `1` or `0`) or specific status codes, e.g. [403] or "402,403".
     'show_exception_message' => false,
+
+    // Show the message given to a policy or gate denial (e.g. Response::deny('...'))
+    // instead of the translated description. Plain `false` denials keep the translated copy.
+    // Use `true` or `false` (also `1` or `0`) or specific status codes, e.g. [403] or "403,404".
+    'show_authorization_message' => true,
 ];
 ```
 
-> ⚠️ When `show_exception_message` is enabled, framework-generated messages are shown too — e.g. `The route foo could not be found.` or `No query results for model [App\Models\User].` Only enable it if your HTTP exception messages are meant for end users.
+> ⚠️ When `show_exception_message` is enabled, framework-generated messages are shown too — e.g. `The route foo could not be found.` or `No query results for model [App\Models\User].` Only enable it for the status codes whose messages are meant for end users, e.g. `'show_exception_message' => [403]`.
+
+`show_authorization_message` is narrower: it only uses the message a policy or gate passes explicitly to `Response::deny()` (or `Response::denyWithStatus()`, for any status), so it is enabled by default. Denials without a message, such as a policy returning `false`, keep the translated description. It takes precedence over `show_exception_message`.
 
 ## Translations
 

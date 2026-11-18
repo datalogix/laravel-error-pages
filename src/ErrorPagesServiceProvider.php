@@ -2,6 +2,7 @@
 
 namespace Datalogix\ErrorPages;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -51,13 +52,9 @@ class ErrorPagesServiceProvider extends ServiceProvider
             }
 
             $code = $e->getStatusCode();
-            $codes = config('error-pages.codes');
+            $codes = $this->parseCodes(config('error-pages.codes'));
 
-            if (is_int($codes) || (is_string($codes) && trim($codes) !== '')) {
-                $codes = array_map(intval(...), explode(',', (string) $codes));
-            }
-
-            if (is_array($codes) && ! in_array($code, $codes)) {
+            if ($codes !== null && ! in_array($code, $codes, true)) {
                 return;
             }
 
@@ -72,9 +69,13 @@ class ErrorPagesServiceProvider extends ServiceProvider
             $key = Lang::hasForLocale("error-pages::messages.{$code}", $locale) ? $code : 'default';
             $copy = trans("error-pages::messages.{$key}", [], $locale);
 
-            $description = config('error-pages.show_exception_message', false) && $e->getMessage() !== ''
-                ? $e->getMessage()
-                : $copy['description'];
+            $authorizationMessage = $this->resolveAuthorizationMessage($e);
+
+            $description = match (true) {
+                $authorizationMessage !== null && $this->enabledForCode(config('error-pages.show_authorization_message', true), $code) => $authorizationMessage,
+                $e->getMessage() !== '' && $this->enabledForCode(config('error-pages.show_exception_message', false), $code) => $e->getMessage(),
+                default => $copy['description'],
+            };
 
             $data = [
                 'code' => $code,
@@ -94,6 +95,38 @@ class ErrorPagesServiceProvider extends ServiceProvider
 
             return response()->view('error-pages::fallback', $data, $code, $e->getHeaders());
         });
+    }
+
+    /**
+     * @return list<int>|null
+     */
+    protected function parseCodes(mixed $value): ?array
+    {
+        if (is_int($value) || (is_string($value) && trim($value) !== '')) {
+            return array_map(intval(...), explode(',', (string) $value));
+        }
+
+        return is_array($value) ? array_values(array_map(intval(...), $value)) : null;
+    }
+
+    protected function enabledForCode(mixed $value, int $code): bool
+    {
+        if (is_bool($value) || in_array($value, [0, 1, '0', '1'], true)) {
+            return (bool) $value;
+        }
+
+        return in_array($code, $this->parseCodes($value) ?? [], true);
+    }
+
+    protected function resolveAuthorizationMessage(HttpExceptionInterface $e): ?string
+    {
+        $previous = $e->getPrevious();
+
+        if (! $previous instanceof AuthorizationException) {
+            return null;
+        }
+
+        return $previous->response()?->message() ?: null;
     }
 
     /**
