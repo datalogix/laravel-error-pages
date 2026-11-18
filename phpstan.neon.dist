@@ -12,3 +12,7 @@ parameters:
             identifier: function.alreadyNarrowedType
             path: src/ErrorPagesServiceProvider.php
             count: 1
+        -
+            identifier: nullsafe.neverNull
+            path: src/ErrorPagesServiceProvider.php
+            count: 1

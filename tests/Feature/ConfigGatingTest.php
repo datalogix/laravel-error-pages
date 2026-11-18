@@ -60,10 +60,10 @@ test('exception message is hidden by default', function () {
     $response->assertDontSee('Upgrade your plan to access this');
 });
 
-test('exception message replaces description when enabled', function () {
+test('exception message replaces description when enabled', function (mixed $enabled) {
     $messages = messages();
 
-    config()->set('error-pages.show_exception_message', true);
+    config()->set('error-pages.show_exception_message', $enabled);
 
     $response = $this->get('/boom-message');
 
@@ -71,7 +71,19 @@ test('exception message replaces description when enabled', function () {
     $response->assertSee($messages[403]['title']);
     $response->assertSee('Upgrade your plan to access this');
     $response->assertDontSee($messages[403]['description']);
-});
+})->with([true, 1, '1']);
+
+test('exception message is hidden when disabled with zero', function (mixed $disabled) {
+    $messages = messages();
+
+    config()->set('error-pages.show_exception_message', $disabled);
+
+    $response = $this->get('/boom-message');
+
+    $response->assertStatus(403);
+    $response->assertSee($messages[403]['description']);
+    $response->assertDontSee('Upgrade your plan to access this');
+})->with([0, '0']);
 
 test('exception message is escaped', function (bool $tallkit) {
     if ($tallkit) {
@@ -139,3 +151,22 @@ test('non http exceptions are not touched', function () {
     $response->assertStatus(500);
     $response->assertDontSee('class="badge"', false);
 });
+
+test('exception message is shown only for listed codes', function (mixed $codes) {
+    $messages = messages();
+
+    Route::get('/boom-missing', fn () => abort(404, 'Internal lookup failed'));
+    config()->set('error-pages.show_exception_message', $codes);
+
+    $this->get('/boom-message')->assertSee('Upgrade your plan to access this');
+
+    $response = $this->get('/boom-missing');
+
+    $response->assertStatus(404);
+    $response->assertSee($messages[404]['description']);
+    $response->assertDontSee('Internal lookup failed');
+})->with([
+    'array' => [[403]],
+    'string' => ['402,403'],
+    'integer' => [403],
+]);
